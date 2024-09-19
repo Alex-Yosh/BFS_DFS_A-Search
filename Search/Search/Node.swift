@@ -9,14 +9,9 @@ import Foundation
 
 struct Node {
     var coords : Coordinate
+    var level : Int
 
     var children : [Node]?
-    
-    func ExploreNode()
-    {
-        
-        //set children
-    }
 }
 
 struct Coordinate {
