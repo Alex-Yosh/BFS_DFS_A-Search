@@ -55,10 +55,12 @@ while(!Terminate){
                 print("a")
                 
             case "b":
-                print("a")
+                print("b")
                 
             case "c":
-                print("a")
+                S = Coordinate(x: 0, y: 0)
+                E1 = Coordinate(x: 24, y: 24)
+                E2 = nil
                 
             default:
                 print("false input")
@@ -74,9 +76,7 @@ while(!Terminate){
             print("2")
             
         case "3":
-            S = Coordinate(x: 0, y: 0)
-            E1 = Coordinate(x: 24, y: 24)
-            E2 = nil
+            print("3")
             
         default:
             print("false input")
