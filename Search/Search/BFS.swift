@@ -7,7 +7,3 @@
 
 import Foundation
 
-struct SimpleTree {
-    var value : Int
-    var children : [SimpleTree]?
-}
