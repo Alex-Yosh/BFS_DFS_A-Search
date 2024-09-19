@@ -1,8 +1,6 @@
-{\rtf1\ansi\ansicpg1252\cocoartf2759
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-{\*\expandedcolortbl;;}
-\margl1440\margr1440\vieww11520\viewh8400\viewkind0
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+This project is for ECE 473A
 
-\f0\fs24 \cf0 Hello World}
+Assignment 1.
+
+In this project, I will implement code to find a path from the starting position to the exit position using Breath-First Search (BFS), Depth-First Search(DFS), and A* Search
+
