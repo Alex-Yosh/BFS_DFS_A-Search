@@ -19,17 +19,75 @@ var Walls : [Coordinate] = []
 var S : Coordinate = FindUnusedCoord()
 var E1 : Coordinate = FindUnusedCoord()
 var E2 : Coordinate? = FindUnusedCoord()
+var FinalPath : [Coordinate] = []
 
 func FindUnusedCoord() -> Coordinate
 {
     let x = Int.random(in: 0...24)
     let y = Int.random(in: 0...24)
-    if (!taken.contains { $0.x == x && $0.y == y } )
+    if (!taken.contains(Coordinate(x: x, y: y)))
     {
         taken.append(Coordinate(x: x, y: y))
         return Coordinate(x: x, y: y)
     }
     return FindUnusedCoord()
+}
+
+func printMap()
+{
+    //print map
+    for i in 0...24{
+        var line = ""
+        for j in 0...24{
+            let currCoord = Coordinate(x: j, y: 24 - i)
+            if (taken.contains(currCoord))
+            {
+                if (Walls.contains(currCoord))
+                {
+                    //wall
+                    line += "x"
+                }
+                else
+                {
+                    if (S == currCoord)
+                    {
+                        //start
+                        line += "s"
+                        continue
+                        
+                    }
+                    else if (E1 == currCoord)
+                    {
+                        //first exit
+                        line += "1"
+                        continue
+                        
+                    }
+                    else if let E2 = E2{
+                        if (E2 == currCoord)
+                        {
+                            //Second exit
+                            line += "2"
+                            continue
+                        }
+                    }
+                    
+                    //empty
+                    if (FinalPath.contains(currCoord)){
+                        line += "*"
+                    }else{
+                        line += "o"
+                    }
+                }
+            }else if (FinalPath.contains(currCoord)){
+                line += "*"
+            }else{
+                //empty
+                line += "o"
+            }
+        }
+        print(line)
+    }
 }
 
 //generate walls
@@ -50,88 +108,38 @@ while(!Terminate){
         
         if let question = readLine() {
             
-            switch(question){
-            case "a":
-                print("a")
-                
-            case "b":
-                print("b")
-                
-            case "c":
+            if question == "c"{
                 S = Coordinate(x: 0, y: 0)
                 E1 = Coordinate(x: 24, y: 24)
                 E2 = nil
-                
-            default:
-                print("false input")
             }
             
         }
         
+        var searchModel: SearchTypes?
         switch(searchMethod){
         case "1":
-            print("1")
+            searchModel = SearchTypes.BFS
             
         case "2":
-            print("2")
+            searchModel = SearchTypes.DFS
             
         case "3":
-            print("3")
+            searchModel = SearchTypes.DFS
             
         default:
             print("false input")
         }
         
+        if let searchModel = searchModel{
+            let searchManager: Search = Search(inital: S, goal: E1)
+            FinalPath = searchManager.FindFinalPath(searchModel: searchModel)
+        }
+        
         
     }
     
-    //print map
-    for i in 0...24{
-        var line = ""
-        for j in 0...24{
-            if (taken.contains { $0.x == j && $0.y == 24 - i })
-            {
-                if (Walls.contains { $0.x == j && $0.y == 24 - i })
-                {
-                    //wall
-                    line += "x"
-                }
-                else
-                {
-                    if (S.x == j && S.y == 24 - i)
-                    {
-                        //start
-                        line += "s"
-                        continue
-                        
-                    }
-                    else if (E1.x == j && E1.y == 24 - i)
-                    {
-                        //first exit
-                        line += "1"
-                        continue
-                        
-                    }
-                    else if let E2 = E2{
-                        if (E2.x == j && E2.y == 24 - i)
-                        {
-                            //Second exit
-                            line += "2"
-                            continue
-                        }
-                    }
-                    
-                    //empty
-                    line += "o"
-                }
-                
-            }else{
-                //empty
-                line += "o"
-            }
-        }
-        print(line)
-    }
+    printMap()
     
     
     print("Terminate? Y/N")
