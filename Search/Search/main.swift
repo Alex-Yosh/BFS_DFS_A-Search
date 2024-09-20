@@ -54,9 +54,17 @@ Walls += [Coordinate(x: 8, y: 17), Coordinate(x: 8, y: 18), Coordinate(x: 9, y: 
 
 taken += Walls
 
-var S : Coordinate = FindUnusedCoord()
-var E1 : Coordinate = FindUnusedCoord()
-var E2 : Coordinate = FindUnusedCoord()
+
+//randomized starting locations
+//var E1 : Coordinate = FindUnusedCoord()
+//var E2 : Coordinate = FindUnusedCoord()
+//var S : Coordinate = FindUnusedCoord()
+//set to example config
+var E1 : Coordinate = Coordinate(x: 23, y: 19)
+var E2 : Coordinate = Coordinate(x: 2, y: 21)
+var S : Coordinate = Coordinate(x: 2, y: 11)
+taken += [E1,E2,S]
+
 var FinalPath : [Coordinate] = []
 
 func FindUnusedCoord() -> Coordinate
@@ -137,6 +145,8 @@ while(!Terminate){
     if let searchMethod = readLine() {
         
         print("which question? (a: With the agent starting at S and ending at E1, b: With the agent starting at S and ending at E2, c: With the agent starting at (0,0) and ending (24,24))")
+        E1 = Coordinate(x: 23, y: 19)
+        S =  Coordinate(x: 2, y: 11)
         var goal = E1
         if let question = readLine() {
             
@@ -146,6 +156,7 @@ while(!Terminate){
             if question == "c"{
                 S = Coordinate(x: 0, y: 0)
                 E1 = Coordinate(x: 24, y: 24)
+                goal = E1
             }
             
         }
@@ -154,12 +165,15 @@ while(!Terminate){
         switch(searchMethod){
         case "1":
             searchModel = SearchTypes.BFS
+            print("BFS SEARCH:")
             
         case "2":
             searchModel = SearchTypes.DFS
+            print("DFS SEARCH:")
             
         case "3":
             searchModel = SearchTypes.AStar
+            print("A* SEARCH:")
             
         default:
             print("false input")
@@ -168,6 +182,12 @@ while(!Terminate){
         if let searchModel = searchModel{
             let searchManager: Search = Search(goal: goal)
             FinalPath = searchManager.FindFinalPath(searchModel: searchModel, inital: S)
+            var path = ""
+            for n in FinalPath{
+                path += ("(\(n.x), \(n.y)) -> ")
+            }
+            path += ("(\(goal.x), \(goal.y))")
+            print(path)
             print("cost: \(FinalPath.count)")
             print("Nodes Visited: \(searchManager.closedQueue.count + 1)")
         }
