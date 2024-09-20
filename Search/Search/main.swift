@@ -18,7 +18,7 @@ var taken : [Coordinate] = [Coordinate(x: 0, y: 0), Coordinate(x: 24, y: 24)]
 var Walls : [Coordinate] = []
 var S : Coordinate = FindUnusedCoord()
 var E1 : Coordinate = FindUnusedCoord()
-var E2 : Coordinate? = FindUnusedCoord()
+var E2 : Coordinate = FindUnusedCoord()
 var FinalPath : [Coordinate] = []
 
 func FindUnusedCoord() -> Coordinate
@@ -63,13 +63,13 @@ func printMap()
                         continue
                         
                     }
-                    else if let E2 = E2{
-                        if (E2 == currCoord)
-                        {
-                            //Second exit
-                            line += "2"
-                            continue
-                        }
+                    else if(E2 == currCoord)
+                    {
+                        //second exit
+                        line += "2"
+                        continue
+                        
+    
                     }
                     
                     //empty
@@ -105,13 +105,15 @@ while(!Terminate){
     if let searchMethod = readLine() {
         
         print("which question? (a: With the agent starting at S and ending at E1, b: With the agent starting at S and ending at E2, c: With the agent starting at (0,0) and ending (24,24))")
-        
+        var goal = E1
         if let question = readLine() {
             
+            if question == "b"{
+                goal = E2
+            }
             if question == "c"{
                 S = Coordinate(x: 0, y: 0)
                 E1 = Coordinate(x: 24, y: 24)
-                E2 = nil
             }
             
         }
@@ -125,15 +127,17 @@ while(!Terminate){
             searchModel = SearchTypes.DFS
             
         case "3":
-            searchModel = SearchTypes.DFS
+            searchModel = SearchTypes.AStar
             
         default:
             print("false input")
         }
         
         if let searchModel = searchModel{
-            let searchManager: Search = Search(inital: S, goal: E1)
-            FinalPath = searchManager.FindFinalPath(searchModel: searchModel)
+            let searchManager: Search = Search(goal: goal)
+            FinalPath = searchManager.FindFinalPath(searchModel: searchModel, inital: S)
+            print("cost: \(FinalPath.count)")
+            print("Nodes Visited: \(searchManager.closedQueue.count + 1)")
         }
         
         

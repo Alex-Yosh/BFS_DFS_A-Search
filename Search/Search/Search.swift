@@ -8,13 +8,12 @@
 import Foundation
 
 protocol SearchProtocol {
-    var initalCoord: Coordinate { get }
     var goalCoord: Coordinate { get }
     var openQueue: [Node] { get }
     var closedQueue: [Node] { get }
     
     func GetChildren(node:Node) -> [Node]
-    func FindFinalPath(searchModel: SearchTypes) -> [Coordinate]
+    func FindFinalPath(searchModel: SearchTypes, inital: Coordinate) -> [Coordinate]
     func CheckNode(node: Node) -> Bool
 }
 
@@ -27,16 +26,14 @@ enum SearchTypes
 
 class Search : SearchProtocol
 {
-    var initalCoord: Coordinate
     var goalCoord: Coordinate
     var openQueue: [Node]
     var closedQueue: [Node]
     
-    init(inital: Coordinate, goal: Coordinate)
+    init(goal: Coordinate)
     {
-        initalCoord = inital
         goalCoord = goal
-        openQueue = [Node(coords: inital, level: 1, history: [])]
+        openQueue = []
         closedQueue = []
     }
     
@@ -55,7 +52,7 @@ class Search : SearchProtocol
             && !closedQueue.contains { $0.coords == newCoord}
             && !openQueue.contains { $0.coords == newCoord})
         {
-            children.append(Node(coords: newCoord, level: node.level + 1, history: newHistory))
+            children.append(Node(coords: newCoord, cost: node.cost + 1, history: newHistory))
         }
         
         //right
@@ -65,7 +62,7 @@ class Search : SearchProtocol
             && !closedQueue.contains { $0.coords == newCoord}
             && !openQueue.contains { $0.coords == newCoord})
         {
-            children.append(Node(coords: newCoord, level: node.level + 1, history: newHistory))
+            children.append(Node(coords: newCoord, cost: node.cost + 1, history: newHistory))
         }
         
         //down
@@ -75,7 +72,7 @@ class Search : SearchProtocol
             && !closedQueue.contains { $0.coords == newCoord}
             && !openQueue.contains { $0.coords == newCoord})
         {
-            children.append(Node(coords: newCoord, level: node.level+1, history: newHistory))
+            children.append(Node(coords: newCoord, cost: node.cost+1, history: newHistory))
         }
         
         //left
@@ -85,7 +82,7 @@ class Search : SearchProtocol
             && !closedQueue.contains { $0.coords == newCoord}
             && !openQueue.contains { $0.coords == newCoord})
         {
-            children.append(Node(coords: newCoord, level: node.level+1, history: newHistory))
+            children.append(Node(coords: newCoord, cost: node.cost+1, history: newHistory))
         }
         
         return children
@@ -93,8 +90,10 @@ class Search : SearchProtocol
     
     
     
-    func FindFinalPath(searchModel: SearchTypes) -> [Coordinate]
+    func FindFinalPath(searchModel: SearchTypes, inital: Coordinate) -> [Coordinate]
     {
+        openQueue = [Node(coords: inital, cost: 0, history: [])]
+        closedQueue = []
         while(!openQueue.isEmpty)
         {
             let firstNode = openQueue.removeFirst()
@@ -113,14 +112,22 @@ class Search : SearchProtocol
                     openQueue.append(contentsOf: GetChildren(node: firstNode))
                     
                 case SearchTypes.DFS:
-                                    openQueue.insert(contentsOf: GetChildren(node: firstNode), at: 0)
+                    openQueue.insert(contentsOf: GetChildren(node: firstNode), at: 0)
+                
+                case SearchTypes.AStar:
+//                    let tempPrevOpen = openQueue
+//                    let tempPrevClosed = closedQueue
+//                    var tempAdd: [Node] = []
+                    for child in GetChildren(node: firstNode){
+                        let h = (abs( goalCoord.x-child.coords.x) + abs( goalCoord.y-child.coords.y))
+                        openQueue.append(Node(coords: child.coords, cost: child.cost, history: child.history, h: h))
+                    }
                     
-                default: break
+//                    openQueue = tempPrevOpen + tempAdd
+//                    closedQueue = tempPrevClosed
+                    openQueue.sort {($0.h! + $0.cost) < ($1.h! + $1.cost)}
                     
                 }
-                
-                
-        
                 
                 //close node
                 closedQueue.append(firstNode)

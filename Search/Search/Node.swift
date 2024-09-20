@@ -9,8 +9,9 @@ import Foundation
 
 struct Node {
     var coords : Coordinate
-    var level : Int
+    var cost : Int
     var history : [Coordinate]
+    var h : Int?
 
     var children : [Node]?
 }
